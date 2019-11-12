@@ -151,7 +151,7 @@ void EventPipeFile::InitializeFile()
     {
         // Create the file stream and write the FastSerialization header.
         m_pSerializer = new FastSerializer(m_pStreamWriter);
-        
+
         // Write the first object to the file.
         m_pSerializer->WriteObject(this);
     }
@@ -201,7 +201,7 @@ void EventPipeFile::WriteEvent(EventPipeEventInstance &instance, ULONGLONG captu
         THROWS;
         GC_NOTRIGGER;
         MODE_ANY;
-        PRECONDITION(!HasErrors());
+        PRECONDITION(m_pSerializer != nullptr);
     }
     CONTRACTL_END;
 
@@ -247,7 +247,7 @@ void EventPipeFile::WriteSequencePoint(EventPipeSequencePoint* pSequencePoint)
         GC_NOTRIGGER;
         MODE_ANY;
         PRECONDITION(pSequencePoint != nullptr);
-        PRECONDITION(!HasErrors());
+        PRECONDITION(m_pSerializer != nullptr);
     }
     CONTRACTL_END;
 
@@ -278,7 +278,7 @@ void EventPipeFile::Flush(FlushFlags flags)
         NOTHROW;
         GC_NOTRIGGER;
         MODE_ANY;
-        PRECONDITION(!HasErrors());
+        PRECONDITION(m_pSerializer != nullptr);
         PRECONDITION(m_pMetadataBlock != nullptr);
         PRECONDITION(m_pStackBlock != nullptr);
         PRECONDITION(m_pBlock != nullptr);
@@ -312,7 +312,7 @@ void EventPipeFile::WriteEnd()
         NOTHROW;
         GC_NOTRIGGER;
         MODE_ANY;
-        PRECONDITION(!HasErrors());
+        PRECONDITION(m_pSerializer != nullptr);
     }
     CONTRACTL_END;
 
@@ -323,7 +323,7 @@ void EventPipeFile::WriteEnd()
     m_pSerializer->WriteTag(FastSerializerTags::NullReference);
 }
 
-void EventPipeFile::WriteEventToBlock(EventPipeEventInstance &instance, 
+void EventPipeFile::WriteEventToBlock(EventPipeEventInstance &instance,
                                       unsigned int metadataId,
                                       ULONGLONG captureThreadId,
                                       unsigned int sequenceNumber,

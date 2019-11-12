@@ -98,7 +98,7 @@ try {
       }
 
       Write-Verbose "Installing $ToolName version $ToolVersion"
-      Write-Verbose "Executing '$InstallerPath $LocalInstallerArguments'"
+      Write-Verbose "Executing '$InstallerPath $($LocalInstallerArguments.Keys.ForEach({"-$_ '$($LocalInstallerArguments.$_)'"}) -join ' ')'"
       & $InstallerPath @LocalInstallerArguments
       if ($LASTEXITCODE -Ne "0") {
         $errMsg = "$ToolName installation failed"
@@ -133,6 +133,7 @@ try {
   if (Test-Path $InstallBin) {
     Write-Host "Native tools are available from" (Convert-Path -Path $InstallBin)
     Write-Host "##vso[task.prependpath]$(Convert-Path -Path $InstallBin)"
+    return $InstallBin
   }
   else {
     Write-Error "Native tools install directory does not exist, installation failed"
